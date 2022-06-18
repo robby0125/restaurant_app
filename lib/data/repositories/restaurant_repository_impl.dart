@@ -19,4 +19,14 @@ class RestaurantRepositoryImpl implements RestaurantRepository {
       return Left(ResourceFailure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, List<Restaurant>>> getTopRatedRestaurants() async {
+    try {
+      final result = await dataSource.getTopRatedRestaurants();
+      return Right(result.map((e) => e.toEntity()).toList());
+    } on ResourceException catch (e) {
+      return Left(ResourceFailure(e.message));
+    }
+  }
 }

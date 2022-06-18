@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
+import 'package:restaurant_app/common/styles.dart';
+import 'package:restaurant_app/domain/entities/restaurant.dart';
 import 'package:restaurant_app/presentation/widgets/icon_text.dart';
 
 class RestaurantCard extends StatelessWidget {
-  const RestaurantCard({Key? key}) : super(key: key);
+  final Restaurant restaurant;
+
+  const RestaurantCard({
+    Key? key,
+    required this.restaurant,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +29,30 @@ class RestaurantCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              constraints: const BoxConstraints(
-                minWidth: 120,
-                minHeight: 80,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.all(
+              width: 120,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Styles.colors.grey,
+                borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: Image.network(
+                restaurant.pictureId,
+                fit: BoxFit.cover,
+                loadingBuilder: (_, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return const Center(
+                      child: Icon(
+                        FontAwesomeIcons.image,
+                        color: Colors.grey,
+                      ),
+                    );
+                  }
+                },
               ),
             ),
             const SizedBox(width: 8),
@@ -39,20 +61,20 @@ class RestaurantCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dummy\nRestaurant',
+                    restaurant.name,
                     style: Get.textTheme.bodyText1,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Dummy\nAddress',
+                    restaurant.city,
                     style: Get.textTheme.caption,
                   ),
                 ],
               ),
             ),
-            const IconText(
+            IconText(
               icon: FontAwesomeIcons.solidStar,
-              text: '4.1',
+              text: restaurant.rating.toString(),
             ),
           ],
         ),

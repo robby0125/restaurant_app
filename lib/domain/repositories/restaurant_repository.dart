@@ -4,4 +4,5 @@ import 'package:restaurant_app/domain/entities/restaurant.dart';
 
 abstract class RestaurantRepository {
   Future<Either<Failure, List<Restaurant>>> getAllRestaurants();
+  Future<Either<Failure, List<Restaurant>>> getTopRatedRestaurants();
 }

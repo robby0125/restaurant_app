@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app/common/styles.dart';
+import 'package:restaurant_app/domain/entities/restaurant.dart';
 import 'package:restaurant_app/presentation/widgets/icon_text.dart';
 
 class TopRatedCard extends StatelessWidget {
+  final Restaurant restaurant;
   final double width;
   final double height;
 
   const TopRatedCard({
     Key? key,
+    required this.restaurant,
     required this.width,
     required this.height,
   }) : super(key: key);
@@ -27,7 +30,7 @@ class TopRatedCard extends StatelessWidget {
               Radius.circular(8),
             ),
             child: Image.network(
-              'https://restaurant-api.dicoding.dev/images/medium/14',
+              restaurant.pictureId,
               width: width,
               height: height,
               fit: BoxFit.cover,
@@ -47,25 +50,24 @@ class TopRatedCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'Dummy Restaurant',
+                  restaurant.name,
                   style: Get.textTheme.subtitle1!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Dummy Address',
+                  restaurant.city,
                   style: Get.textTheme.caption,
                 ),
                 const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: IconText(
                         icon: FontAwesomeIcons.solidStar,
-                        text: '4.1',
-                        secondaryText: '(200)',
+                        text: restaurant.rating.toString(),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -73,7 +75,7 @@ class TopRatedCard extends StatelessWidget {
                       child: IconText(
                         icon: FontAwesomeIcons.burger,
                         iconColor: Styles.colors.purple,
-                        text: '10',
+                        text: restaurant.menus.foods.length.toString(),
                         secondaryText: 'Foods',
                       ),
                     ),
@@ -82,7 +84,7 @@ class TopRatedCard extends StatelessWidget {
                       child: IconText(
                         icon: FontAwesomeIcons.beerMugEmpty,
                         iconColor: Styles.colors.teal,
-                        text: '10',
+                        text: restaurant.menus.drinks.length.toString(),
                         secondaryText: 'Drinks',
                       ),
                     ),

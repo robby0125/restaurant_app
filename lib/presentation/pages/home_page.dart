@@ -37,60 +37,62 @@ class _HomePageState extends State<HomePage> {
             size: Size(Get.width, 200),
             painter: _HeaderPainter(),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CarouselSlider(
-                items: List.generate(
-                  5,
-                  (_) => const TopRatedCard(
-                    width: 300,
-                    height: 225,
+          Obx(() {
+            final state = restaurantsController.state;
+
+            if (state == RequestState.success) {
+              final restaurants = restaurantsController.restaurants;
+              final topRated = restaurantsController.topRatedRestaurants;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CarouselSlider(
+                    items: List.generate(
+                      topRated.length,
+                      (index) => TopRatedCard(
+                        restaurant: topRated[index],
+                        width: 300,
+                        height: 225,
+                      ),
+                    ),
+                    options: CarouselOptions(
+                      autoPlay: true,
+                      viewportFraction: 0.8,
+                      onPageChanged: (index, _) => setState(() {
+                        curTopRatedIdx = index;
+                      }),
+                    ),
                   ),
-                ),
-                options: CarouselOptions(
-                  autoPlay: true,
-                  viewportFraction: 0.8,
-                  onPageChanged: (index, _) => setState(() {
-                    curTopRatedIdx = index;
-                  }),
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildCarouselIndicator(totalItem: 5),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'All Restaurants',
-                  style: Get.textTheme.headline6,
-                ),
-              ),
-              Flexible(
-                child: Obx(() {
-                  final state = restaurantsController.state;
-
-                  if (state == RequestState.success) {
-                    final restaurants = restaurantsController.restaurants;
-
-                    return ListView.separated(
+                  const SizedBox(height: 8),
+                  _buildCarouselIndicator(totalItem: 5),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'All Restaurants',
+                      style: Get.textTheme.headline6,
+                    ),
+                  ),
+                  Flexible(
+                    child: ListView.separated(
                       padding: const EdgeInsets.only(
                         left: 8,
                         right: 8,
                         bottom: 16,
                       ),
-                      itemBuilder: (_, __) => const RestaurantCard(),
+                      itemBuilder: (_, index) => RestaurantCard(
+                        restaurant: restaurants[index],
+                      ),
                       separatorBuilder: (_, __) => const SizedBox(height: 8),
                       itemCount: restaurants.length,
-                    );
-                  } else if (state == RequestState.error) {
-                    return Text(restaurantsController.message);
-                  } else {
-                    return Container();
-                  }
-                }),
-              ),
-            ],
-          ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }
+          }),
         ],
       ),
       drawer: const Drawer(),
